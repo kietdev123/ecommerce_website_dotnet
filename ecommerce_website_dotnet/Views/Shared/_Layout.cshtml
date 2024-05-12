@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using ecommerce_website_dotnet.Areas.Identity.Data
+@inject SignInManager<CustomUser> SignInManager
+@inject UserManager<CustomUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,9 +27,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppRoles" asp-action="Index">Roles</a>
-                        </li>
+
+                        @{
+                            var user = await UserManager.GetUserAsync(User);
+                            var userRoles = new List<String>();
+                            if (user != null)
+                            {
+                                userRoles = UserManager.GetRolesAsync(user).Result.ToList();                               
+                            }      
+                        }
+
+                        @if (SignInManager.IsSignedIn(User) && userRoles.Contains("Admin"))
+                        {
+ 
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppRoles" asp-action="Index">Roles</a>
+                            </li>
+                           
+                        }
+                       
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
