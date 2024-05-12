@@ -14,3 +14,9 @@ values
 ('User','User','User','User'),
 ('Admin','Admin','Admin','Admin');
 
+DELETE FROM AspNetUsers
+Where UserName = 'skill1sp2@gmail.com'
+
+UPDATE AspNetUserRoles
+SET RoleId = 'Admin'
+WHERE UserId = 'dd8f8a3b-3512-46a0-983b-9514fe0ddc79';
