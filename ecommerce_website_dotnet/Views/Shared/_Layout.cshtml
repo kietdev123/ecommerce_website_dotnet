@@ -3,6 +3,17 @@
 @inject SignInManager<CustomUser> SignInManager
 @inject UserManager<CustomUser> UserManager
 
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var userRoles = new List<String>();
+    if (user != null)
+    {
+        userRoles = UserManager.GetRolesAsync(user).Result.ToList();
+    }
+    var isAdmin = false;
+    if (userRoles.Contains("Admin")) isAdmin = true;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,16 +39,8 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
-                        @{
-                            var user = await UserManager.GetUserAsync(User);
-                            var userRoles = new List<String>();
-                            if (user != null)
-                            {
-                                userRoles = UserManager.GetRolesAsync(user).Result.ToList();                               
-                            }      
-                        }
-
-                        @if (SignInManager.IsSignedIn(User) && userRoles.Contains("Admin"))
+                      
+                        @if (SignInManager.IsSignedIn(User) && isAdmin)
                         {
  
                             <li class="nav-item">

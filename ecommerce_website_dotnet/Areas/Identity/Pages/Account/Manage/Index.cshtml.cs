@@ -59,6 +59,18 @@ namespace ecommerce_website_dotnet.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Name")]
+            public string Name { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Avatar")]
+            public string Avatar { get; set; }
+
+            [Display(Name = "Birth Date")]
+            [DataType(DataType.Date)]
+            public DateTime BirthOfDate { get; set; }
         }
 
         private async Task LoadAsync(CustomUser user)
@@ -67,10 +79,17 @@ namespace ecommerce_website_dotnet.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Username = userName;
-
+            var BOD = new DateTime();
+            if (user.BirthOfDate != null)
+            {
+                BOD = (DateTime)user.BirthOfDate;
+            }
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Name = user.Name,
+                Avatar = user.Avatar,
+                BirthOfDate = BOD,
             };
         }
 
@@ -110,6 +129,24 @@ namespace ecommerce_website_dotnet.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            
+            if (Input.Name != user.Name)
+            {
+                user.Name = Input.Name;
+            }
+
+            if (Input.Avatar != user.Avatar)
+            {
+                user.Avatar = Input.Avatar;
+            }
+
+
+            if (Input.BirthOfDate != user.BirthOfDate)
+            {
+                user.BirthOfDate = Input.BirthOfDate;
+            }
+
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
